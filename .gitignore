@@ -2,9 +2,9 @@
 .coverage
 .ipynb_checkpoints
 .DS_Store
-raw_data/
 *.csv
 **/__pycache__/
 .env
 /raw_data/*
-/API_Documentation/*
+/first_model/*
+/whole_dataset/*
