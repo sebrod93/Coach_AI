@@ -39,9 +39,10 @@ webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
 
 video = st.file_uploader('video')
 if video:
-    url = 'http://127.0.0.1:8000/predict'
+    url = 'https://coachai-ujeungn6tq-ew.a.run.app/predict'
     data = {'video': video}
     x = requests.post(url, files= data)
     st.write(x.text)
+
 
 st.video(video)
