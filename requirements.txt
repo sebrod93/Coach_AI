@@ -30,5 +30,8 @@ memoized-property
 termcolor
 
 streamlit
-cv2
+opencv-python
+uvicorn
 mediapipe
+streamlit_webrtc
+watchdog

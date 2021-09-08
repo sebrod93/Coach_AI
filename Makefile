@@ -75,8 +75,8 @@ deploy_heroku:
 #         GCP
 # ----------------------------------
 
-PROJECT_ID=	wagon-bootcamp-319219
-BUCKET_NAME=wagon-data-677-nguyen-coachai
+PROJECT_ID=	wagon-bootcamp-319610
+BUCKET_NAME=wagon-data-677-rodriguezvasquez-coachai
 REGION=europe-west1
 
 set_project:
@@ -98,7 +98,7 @@ BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
 # 	@gsutil cp ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
 
 upload_model:
-	@cd CoachAI && python gcp.py
+	@cd Coach_AI && python gcp.py
 
 run_api:
 	uvicorn api.fast:app --reload  # load web server with code autoreload
