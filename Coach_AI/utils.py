@@ -4,7 +4,7 @@ import math
 import os
 import shutil
 from google.cloud import storage
-from CoachAI.params import BUCKET_NAME, MODEL_NAME, MODEL_VERSION, LOCAL_MODEL_NAME
+from Coach_AI.params import BUCKET_NAME, MODEL_NAME, MODEL_VERSION, LOCAL_MODEL_NAME
 import pickle
 
 
@@ -20,7 +20,7 @@ def download_model(rm=False):
 
     if rm:
         os.remove(LOCAL_MODEL_NAME)
-    
+
     return model
 
 BODY_POINTS = {
@@ -63,7 +63,7 @@ def dict_to_array(dictionary):
     array = []
     for key, value in dictionary.items():
         array.append(value)
-    
+
     return np.array(array)
 
 def calculate_body_angle(coordinates, body_part1, body_part2):
@@ -131,7 +131,7 @@ def normalize_pose_landmarks(coordinates, torso_size_multiplier=2):
     """Normalizes landmarks translation and scale."""
 
     norm_coordinates = coordinates.copy()
-    
+
     # Normalize translation.
     pose_center = get_pose_center(norm_coordinates)
     norm_coordinates -= pose_center
@@ -163,16 +163,16 @@ def get_angle(coordinates, body_part1, body_part2, body_part3, dimensions = '2D'
 def calculate_pairwise_distances(coordinates, torso_size_multiplier=2):
     '''Calculates a set of distances for a coordinate system'''
     pairs = [('LShoulder', 'LWrist'), ('RShoulder', 'RWrist'), ('RHip', 'RAnkle'), ('LHip', 'LAnkle'), ('RWrist', 'LWrist'),
-             ('LAnkle', 'RAnkle'), ('RHip', 'RWrist'), ('LHip', 'LWrist'), ('LWrist', 'LAnkle'), ('RWrist', 'RAnkle'), 
+             ('LAnkle', 'RAnkle'), ('RHip', 'RWrist'), ('LHip', 'LWrist'), ('LWrist', 'LAnkle'), ('RWrist', 'RAnkle'),
              ('RKnee', 'LKnee'), ('RHip', 'LKnee'), ('LHip', 'RKnee')]
-    
+
     distances_list = []
-    
+
     for pair in pairs:
         norm_coordinates = normalize_pose_landmarks(coordinates)
         distance = round(get_distance(norm_coordinates, pair[0], pair[1]),2)
         distances_list.append(distance)
-        
+
     return distances_list
 
 def calculate_set_of_angles(coordinates):
@@ -183,5 +183,5 @@ def calculate_set_of_angles(coordinates):
     for joint in joints:
         angle = round(get_angle(coordinates, joint[0], joint[1], joint[2]),2)
         angles_list.append(angle)
-    
+
     return angles_list
