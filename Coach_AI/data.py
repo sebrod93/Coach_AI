@@ -1,4 +1,3 @@
-
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -94,7 +93,10 @@ def json_to_df(json):
     row.append(mean_body_angle)
     data.append(row)
 
-    return data
+
+    return data, distances_array, joints_angles_array
+
+
 
 # if __name__ == '__main__':
 
