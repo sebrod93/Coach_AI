@@ -1,4 +1,3 @@
-
 import numpy as np
 import math
 import os
@@ -6,6 +5,9 @@ import shutil
 from google.cloud import storage
 from Coach_AI.params import BUCKET_NAME, MODEL_NAME, MODEL_VERSION, LOCAL_MODEL_NAME
 import pickle
+import cv2
+import mediapipe as mp
+import tempfile
 
 
 def download_model(rm=False):

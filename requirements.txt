@@ -36,3 +36,4 @@ python-multipart
 mediapipe
 streamlit_webrtc
 watchdog
+Pillow
