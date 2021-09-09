@@ -31,9 +31,11 @@ termcolor
 
 streamlit
 opencv-python
+
 uvicorn
 python-multipart
 mediapipe
 streamlit_webrtc
 watchdog
 Pillow
+

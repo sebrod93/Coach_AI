@@ -189,6 +189,7 @@ def calculate_set_of_angles(coordinates):
     return angles_list
 
 
+
 def count_repetitions(prediction, distances_array_per_frame,
                       angles_array_per_frame):
     '''prediction = exercice predicted
@@ -282,3 +283,4 @@ def count_repetitions(prediction, distances_array_per_frame,
         count = np.abs((freq[np.argmax(modul)]) * N)
 
     return count
+

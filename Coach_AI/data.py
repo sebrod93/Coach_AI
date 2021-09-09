@@ -93,7 +93,10 @@ def json_to_df(json):
     row.append(mean_body_angle)
     data.append(row)
 
+
     return data, distances_array, joints_angles_array
+
+
 
 # if __name__ == '__main__':
 
