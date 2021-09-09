@@ -75,8 +75,8 @@ deploy_heroku:
 #         GCP
 # ----------------------------------
 
-PROJECT_ID=	wagon-bootcamp-319219
-BUCKET_NAME=wagon-data-677-nguyen-coachai
+PROJECT_ID=	wagon-bootcamp-319610
+BUCKET_NAME=wagon-data-677-rodriguezvasquez-coachai
 REGION=europe-west1
 
 set_project:

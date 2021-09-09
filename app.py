@@ -1,11 +1,12 @@
+from requests.models import Response
 import streamlit as st
 import cv2
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 import mediapipe as mp
 import os
-import tempfile
 import requests
-
+import tempfile
+from PIL import Image
 
 '''
 # CoachAI
@@ -18,6 +19,7 @@ Hello World !
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
+
 
 class VideoTransformer(VideoTransformerBase):
     def __init__(self):
@@ -36,12 +38,16 @@ class VideoTransformer(VideoTransformerBase):
 
 webrtc_streamer(key="example", video_processor_factory=VideoTransformer)
 
-
+stframe = st.empty()
 video = st.file_uploader('video')
+tfile = tempfile.NamedTemporaryFile(delete=False)
 if video:
-    url = 'http://127.0.0.1:8000/predict'
+    url = 'https://coachai-ujeungn6tq-ew.a.run.app/predict'
     data = {'video': video}
-    x = requests.post(url, files= data)
-    st.write(x.text)
+    response = requests.post(url, files=data).json()
+    prediction = response[0]
+    repetitions = response[1]
+    st.write(f'Your exercise: {prediction}')
+    st.write(f'You did: {repetitions} reps')
 
-st.video(video)
+    st.video(video)

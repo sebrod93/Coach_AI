@@ -1,8 +1,8 @@
 import os
 
-### GCP 
+### GCP
 
-BUCKET_NAME = 'wagon-data-677-nguyen-coachai'
+BUCKET_NAME = 'wagon-data-677-rodriguezvasquez-coachai'
 
 MODEL_NAME = 'coachai'
 
