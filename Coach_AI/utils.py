@@ -187,3 +187,98 @@ def calculate_set_of_angles(coordinates):
         angles_list.append(angle)
 
     return angles_list
+
+
+def count_repetitions(prediction, distances_array_per_frame,
+                      angles_array_per_frame):
+    '''prediction = exercice predicted
+    distances_array = list of distances lists calculated on in each frames
+    angles_array = list of angles lists calculated on in each frames
+    return the numbers of the movement repetition in all the frames'''
+    distances_array_per_video = []
+    angles_array_per_video = []
+
+    # transform angles/distances per frame -> angles/distances per categories
+    for i in range(0, 6):
+        angles = [angle[i] for angle in angles_array_per_frame]
+        angles_array_per_video.append(angles)
+
+    for i in range(0, 12):
+        distances = [distance[i] for distance in distances_array_per_frame]
+        distances_array_per_video.append(distances)
+
+    # calculate mean angles
+    mean_angles_array = []
+    for i in range(0, 6, 2):
+        mean_angles = np.mean(
+            [angles_array_per_video[i], angles_array_per_video[i + 1]], axis=0)
+        mean_angles_array.append(mean_angles)
+
+    # feature selection by prediction
+
+    if prediction == 0:
+        # select angle 0 : mean left/right angle shoulders-elbows-wrists
+        angles_selected = mean_angles_array[0]
+
+        amean = np.mean(angles_selected)
+        angles_selected = angles_selected - amean
+        N = len(angles_selected)  # number of data points
+        t = np.linspace(0, N - 1, N)
+
+        # movement count with fft method
+        sp = np.fft.fft(angles_selected)
+        freq = np.fft.fftfreq(t.shape[-1])
+        modul = (sp.real)**2 + (sp.imag)**2
+        np.argmax(modul)
+        count = np.abs((freq[np.argmax(modul)]) * N)
+        print(count)
+
+    elif prediction == 1:
+        # select distance 6 : distance right hips right wrist
+        distance_selected = distances_array_per_video[6]
+
+        amean = np.mean(distance_selected)
+        distance_selected = distance_selected - amean
+        N = len(distance_selected)  # number of data points
+        t = np.linspace(0, N - 1, N)
+
+        # movement count with fft method
+        sp = np.fft.fft(distance_selected)
+        freq = np.fft.fftfreq(t.shape[-1])
+        modul = (sp.real)**2 + (sp.imag)**2
+        np.argmax(modul)
+        count = np.abs((freq[np.argmax(modul)]) * N)
+
+    elif prediction == 2:
+        # select angle 1 : mean left/right angle shoulders-hips-knees
+        angles_selected = mean_angles_array[1]
+
+        amean = np.mean(angles_selected)
+        angles_selected = angles_selected - amean
+        N = len(angles_selected)  # number of data points
+        t = np.linspace(0, N - 1, N)
+
+        # movement count with fft method
+        sp = np.fft.fft(angles_selected)
+        freq = np.fft.fftfreq(t.shape[-1])
+        modul = (sp.real)**2 + (sp.imag)**2
+        np.argmax(modul)
+        count = np.abs((freq[np.argmax(modul)]) * N)
+
+    elif prediction == 3:
+        # select angle 1 : mean left/right angle hips-knees-hankles
+        angles_selected = mean_angles_array[2]
+
+        amean = np.mean(angles_selected)
+        angles_selected = angles_selected - amean
+        N = len(angles_selected)  # number of data points
+        t = np.linspace(0, N - 1, N)
+
+        # movement count with fft method
+        sp = np.fft.fft(angles_selected)
+        freq = np.fft.fftfreq(t.shape[-1])
+        modul = (sp.real)**2 + (sp.imag)**2
+        np.argmax(modul)
+        count = np.abs((freq[np.argmax(modul)]) * N)
+
+    return count
