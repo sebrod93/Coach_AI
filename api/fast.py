@@ -3,7 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 from Coach_AI.data import video_processing, json_to_df
 
+from Coach_AI.utils import download_model, count_repetitions, fit_curve
+
+
 from Coach_AI.utils import download_model, count_repetitions
+
 
 import cv2
 import mediapipe as mp
@@ -11,6 +15,8 @@ import numpy as np
 import pandas as pd
 import json
 import os
+import matplotlib.pyplot as plt
+from scipy.optimize import leastsq
 
 app = FastAPI()
 
@@ -53,12 +59,19 @@ def predict(video: UploadFile = File(...)):
 
         results = model.predict(X)
 
-        repetitions = int(count_repetitions(results[0], distances_array, angles_array))
+        repetitions, params_plot = count_repetitions(results[0], distances_array, angles_array)
+
+        params_plot_list = [list(param_array) for param_array in params_plot[:4]]
+        label = params_plot[-1]
 
         category = {0:'Push Up', 1:'Jumping Jack', 2:'Squat', 3:'Lunge', 4:'Pull Up'}
 
 
+        output = {'prediction':category[results[0]], 'reps':int(repetitions), 'lists': params_plot_list, 'label':label}
+
+
         output = [category[results[0]], repetitions]
+
 
         return output
 

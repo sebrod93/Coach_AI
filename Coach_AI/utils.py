@@ -8,6 +8,8 @@ import pickle
 import cv2
 import mediapipe as mp
 import tempfile
+import matplotlib.pyplot as plt
+from scipy.optimize import leastsq
 
 
 def download_model(rm=False):
@@ -232,7 +234,14 @@ def count_repetitions(prediction, distances_array_per_frame,
         modul = (sp.real)**2 + (sp.imag)**2
         np.argmax(modul)
         count = np.abs((freq[np.argmax(modul)]) * N)
-        print(count)
+
+        # fit sigmoid on selected array
+        fine_t = t
+        data_fit = fit_curve(t, angles_selected, fine_t, count)
+        params_plot = [
+            t, angles_selected, fine_t, data_fit,
+            'Mean L/R angles Shoulders-Elbows-Wrists'
+        ]
 
     elif prediction == 1:
         # select distance 6 : distance right hips right wrist
@@ -250,6 +259,14 @@ def count_repetitions(prediction, distances_array_per_frame,
         np.argmax(modul)
         count = np.abs((freq[np.argmax(modul)]) * N)
 
+        # fit sigmoid on selected array
+        fine_t = t
+        data_fit = fit_curve(t, distance_selected, fine_t, count)
+        params_plot = [
+            t, distance_selected, fine_t, data_fit,
+            'Distance R Hips-Right Wrist'
+        ]
+
     elif prediction == 2:
         # select angle 1 : mean left/right angle shoulders-hips-knees
         angles_selected = mean_angles_array[1]
@@ -265,6 +282,14 @@ def count_repetitions(prediction, distances_array_per_frame,
         modul = (sp.real)**2 + (sp.imag)**2
         np.argmax(modul)
         count = np.abs((freq[np.argmax(modul)]) * N)
+
+        # fit sigmoid on selected array
+        fine_t = t
+        data_fit = fit_curve(t, angles_selected, fine_t, count)
+        params_plot = [
+            t, angles_selected, fine_t, data_fit,
+            'Mean L/R angles Shoulders-Hips-Knees'
+        ]
 
     elif prediction == 3:
         # select angle 1 : mean left/right angle hips-knees-hankles
@@ -282,5 +307,65 @@ def count_repetitions(prediction, distances_array_per_frame,
         np.argmax(modul)
         count = np.abs((freq[np.argmax(modul)]) * N)
 
+
+        # fit sigmoid on selected array
+        fine_t = t
+        data_fit = fit_curve(t, angles_selected, fine_t, count)
+        params_plot = [
+            t, angles_selected, fine_t, data_fit,
+            'Mean L/R angles Hips-Knees-Hankles'
+        ]
+
+    return count, params_plot
+
+
+def make_plot(params_plot):
+    f, ax = plt.subplots(1, 1, figsize=(15, 8))
+    with plt.style.context('seaborn'):
+        ax.scatter(params_plot[0], params_plot[1], label='before fitting')
+        ax.plot(params_plot[2],
+                params_plot[3],
+                label='after fitting',
+                color="orange")
+        ax.set_xlabel('Time', fontsize=15)
+        ax.set_ylabel(params_plot[4], fontsize=15)
+        ax.legend(fontsize=15)
+        return f
+
+
+def fit_curve(t, data, fine_t, freq_data):
+    '''t = number of frames per video
+    data = array
+    fine_t = t
+    freq_data = repetitions number estimated with fft
+    fit a sigmoid on body points
+    return '''
+
+    guess_mean = np.mean(data)
+    guess_std = 3 * np.std(data) / (2**0.5) / (2**0.5)
+    guess_phases = np.linspace(0, np.pi, 15)
+    guess_freq = freq_data
+    guess_amp = 1
+    est_list = []
+    best_scores = {}
+
+    # test multiple guess_phases and return the min score beetween repetition number estimated and number repetition found
+    for guess_phase in guess_phases:
+        est_list = []
+        data_first_guess = guess_std * np.sin(
+            guess_freq * 2 * np.pi * t / len(t) + guess_phase) + guess_mean
+        optimize_func = lambda x: x[0] * np.sin(x[1] * 2 * np.pi * t / len(t) +
+                                                x[2]) + x[3] - data
+        est_amp, est_freq, est_phase, est_mean = leastsq(
+            optimize_func, [guess_amp, guess_freq, guess_phase, guess_mean])[0]
+        est_list = [est_amp, est_freq, est_phase, est_mean]
+        best_scores[np.abs(freq_data - est_freq)] = est_list
+    best_key = min([key for key in best_scores.keys()])
+    print(best_key)
+    est_amp, est_freq, est_phase, est_mean = best_scores[best_key]
+    return (est_amp * np.sin(est_freq * 2 * np.pi * t / len(t) + est_phase) +
+            est_mean)
+
     return count
+
 
