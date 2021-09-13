@@ -1,4 +1,3 @@
-from requests.models import Response
 import cv2
 import matplotlib.pyplot as plt
 import mediapipe as mp
@@ -11,7 +10,6 @@ import tempfile
 from Coach_AI.data import json_to_df
 from Coach_AI.exercices import exercices
 from Coach_AI.utils import make_plot, download_model
-from PIL import Image
 from streamlit_webrtc import VideoTransformerBase, webrtc_streamer
 
 emojis = {
