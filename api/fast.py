@@ -2,7 +2,13 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 from Coach_AI.data import video_processing, json_to_df
+
 from Coach_AI.utils import download_model, count_repetitions, fit_curve
+
+
+from Coach_AI.utils import download_model, count_repetitions
+
+
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -37,7 +43,10 @@ def predict(video: UploadFile = File(...)):
     with open(f'videoUploads/{video.filename}', 'wb') as buffer:
         shutil.copyfileobj(video.file, buffer)
         json = video_processing(buffer.name)
+
         data, distances_array, angles_array = json_to_df(json)
+
+
 
         cols = ['min_d0', 'max_d0', 'min_d1', 'max_d1', 'min_d2', 'max_d2', 'min_d3', 'max_d3', 'min_d4', 'max_d4',
             'min_d5', 'max_d5', 'min_d6', 'max_d6', 'min_d7', 'max_d7', 'min_d8', 'max_d8', 'min_d9', 'max_d9',
@@ -57,6 +66,12 @@ def predict(video: UploadFile = File(...)):
 
         category = {0:'Push Up', 1:'Jumping Jack', 2:'Squat', 3:'Lunge', 4:'Pull Up'}
 
+
         output = {'prediction':category[results[0]], 'reps':int(repetitions), 'lists': params_plot_list, 'label':label}
 
+
+        output = [category[results[0]], repetitions]
+
+
         return output
+

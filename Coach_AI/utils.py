@@ -191,6 +191,7 @@ def calculate_set_of_angles(coordinates):
     return angles_list
 
 
+
 def count_repetitions(prediction, distances_array_per_frame,
                       angles_array_per_frame):
     '''prediction = exercice predicted
@@ -306,6 +307,7 @@ def count_repetitions(prediction, distances_array_per_frame,
         np.argmax(modul)
         count = np.abs((freq[np.argmax(modul)]) * N)
 
+
         # fit sigmoid on selected array
         fine_t = t
         data_fit = fit_curve(t, angles_selected, fine_t, count)
@@ -363,3 +365,7 @@ def fit_curve(t, data, fine_t, freq_data):
     est_amp, est_freq, est_phase, est_mean = best_scores[best_key]
     return (est_amp * np.sin(est_freq * 2 * np.pi * t / len(t) + est_phase) +
             est_mean)
+
+    return count
+
+
